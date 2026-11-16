@@ -117,7 +117,7 @@ html.landing #intro,html.landing #card,html.landing #stage{transition:opacity 1s
 .pcard:hover img.on{transform:scale(1.03);transition:opacity 1.1s ease,transform .8s cubic-bezier(.2,.8,.2,1)}
 .pcard .wipe{position:absolute;top:-5%;bottom:-5%;left:0;width:22%;z-index:2;background:linear-gradient(90deg,rgba(205,103,57,0),#CD6739 40%,#E9885C 60%,rgba(205,103,57,0));transform:translateX(-200%);pointer-events:none;mix-blend-mode:multiply;opacity:.85}
 /* project text rises in word by word */
-.pcard h3 .wm{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.26em;margin-bottom:-.26em}
+.pcard h3 .wm{display:inline;overflow:visible}
 .pcard h3 .wi{display:inline-block}
 .pcard .dots{position:absolute;left:12px;bottom:12px;display:flex;gap:5px;z-index:2}
 .pcard .dots i{width:6px;height:6px;border-radius:50%;background:rgba(255,253,239,.55);box-shadow:0 0 0 1px rgba(31,31,30,.12);transition:background .4s,width .4s}
@@ -426,8 +426,8 @@ html.landing #intro,html.landing #card,html.landing #stage{transition:opacity 1s
 #detail .tester:focus-within{box-shadow:inset 0 0 0 2px rgba(0,139,172,.35)}
 #detail .tester .ph{font:500 15px var(--body);color:var(--muted)}
 #detail .keys{display:grid;grid-template-columns:repeat(14,minmax(0,1fr));gap:8px}
-#detail .keys button{aspect-ratio:1;min-width:0;min-height:0;overflow:hidden;border:0;border-radius:10px;background:#FAF8F0;display:grid;place-items:center;cursor:pointer;padding:18%;transition:transform .25s cubic-bezier(.3,1.6,.5,1),background .2s}
-#detail .keys button img{width:100%;height:100%;object-fit:contain;display:block;transform:none;max-height:none}
+#detail .keys button{position:relative;aspect-ratio:1;min-width:0;min-height:0;overflow:hidden;border:0;border-radius:10px;background:#FAF8F0;display:grid;place-items:center;cursor:pointer;padding:18%;transition:transform .25s cubic-bezier(.3,1.6,.5,1),background .2s}
+#detail .keys button img{position:absolute;inset:18%;width:64%;height:64%;object-fit:contain;display:block;transform:none;max-width:none;max-height:none}
 #detail .keys button:hover{transform:translateY(-4px) rotate(-4deg);background:#F1EDE0}
 #detail .keys button:active{transform:scale(.9)}
 #detail .keys .sp{grid-column:span 1;font:600 12px var(--body);color:var(--muted);padding:0}
@@ -745,6 +745,8 @@ p,figcaption,.lede,.client,.scope{ text-wrap:pretty; }
   transform:none;
 }
 
+/* Work-card text is permanent content, never a reveal-animation layer. */
+.pcard .info,.pcard .info>div,.pcard .info h3,.pcard .info h3 *,.pcard .info .meta,.pcard .info .lede,.pcard .info .client,.pcard .info .client *,.pcard .info .scope{opacity:1!important;visibility:visible!important;transform:none!important;clip-path:none!important;animation:none!important}
 </style>
 </head>
 <body>
@@ -2314,7 +2316,7 @@ const WN = (() => {
 TARGETS.work = WN.STOPS[1]; TARGETS.about = WN.STOPS[PROJECTS.length + 1]; TARGETS.contact = 1;
 // ===== work interactions =====
 let lastLanded = -1;
-cards.forEach((c) => { const h = c.querySelector("h3"); h.innerHTML = h.textContent.split(" ").map((w) => `<span class="wm"><span class="wi">${w}</span></span>`).join(" "); });
+// Work-card copy stays static: no masked words or delayed reveal effects.
 function restoreCardCopy(c) {
   const info = c && c.querySelector(".info");
   if (!info) return;
@@ -2325,14 +2327,10 @@ function restoreCardCopy(c) {
   info.scrollLeft = 0;
 }
 function animateCard(c) {
+  // Keep copy visible even when navigation interrupts an animation frame.
   restoreCardCopy(c);
-  if (detailOpen || reduce || !c || !c.animate) return;
-  const ease = "cubic-bezier(.2,.8,.2,1)";
-  const num = c.querySelector(".num"); num.animate([{ transform: "translateY(40%)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 700, easing: ease, fill: "backwards" });
-  c.querySelectorAll("h3 .wi").forEach((w, i) => w.animate([{ transform: "translateY(110%) rotate(4deg)" }, { transform: "none" }], { duration: 820, delay: 120 + i * 80, easing: ease, fill: "backwards" }));
-  [".meta", ".lede", ".client", ".scope", ".strip", ".open"].forEach((sel, i) => { const e = c.querySelector(sel); if (e && e.offsetParent) e.animate([{ transform: "translateY(16px)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 650, delay: 60 + i * 70 + (sel === ".meta" ? 0 : 160), easing: ease, fill: "backwards" }); });
-  c.querySelectorAll(".thumbs .tb").forEach((t, i) => t.animate([{ transform: "scale(.85)", opacity: 0 }, { transform: "none" }], { duration: 520, delay: 250 + i * 60, easing: ease, fill: "backwards" }));
 }
+
 cards.forEach((c) => {
   // hovering a thumbnail previews it big
   c.querySelectorAll(".tb").forEach((t) => t.addEventListener("pointerenter", (e) => { if (e.pointerType !== "mouse" || !(c._o > 0.6)) return; c._held = performance.now(); showMock(c, +t.dataset.k); }));
