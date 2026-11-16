@@ -657,6 +657,11 @@ html.static-portfolio, .static-portfolio body{background:#29331F}
 .static-portfolio #contact .mail{max-width:100%;font-size:clamp(16px,4vw,42px);overflow-wrap:anywhere}
 @media(max-width:600px){.static-gallery{grid-template-columns:1fr}.static-portfolio #nav nav a{padding:8px 10px}.static-portfolio #intro h1{font-size:clamp(44px,11vw,66px)}}
 
+
+/* Keep short final lines tidy without changing the authored line breaks. */
+h1,h2,h3,h4{ text-wrap:balance; }
+p,figcaption,.lede,.client,.scope{ text-wrap:pretty; }
+
 </style>
 </head>
 <body>
@@ -750,7 +755,7 @@ html.static-portfolio, .static-portfolio body{background:#29331F}
   <div class="txt">
     <div class="mono kick r" style="--d:20">On the green · About</div>
     <h2 class="lt r" style="--d:40" aria-label="Eight years in, still early."><span class="w">Eight</span> <span class="w">years</span> <span class="w">in,</span><br><em class="w">still</em> <em class="w">early.</em></h2>
-    <p class="r" style="--d:60">I'm Ben. I've designed since 2018 and I'm a Graphic Designer at The Canadian Brewhouse. Before that, two years at KMS Tools, and a BFA in Graphic and Digital Design from the University of the Fraser Valley.</p>
+    <p class="r" style="--d:60">I'm Ben. I've designed since 2018 and I'm the Graphic Designer at The Canadian Brewhouse. Before that, two years at KMS Tools on flyers, packaging and email, and a BFA in Graphic and Digital Design from the University of the Fraser Valley.</p>
     <p class="xtra r" style="--d:75">I played golf at UFV for seven years and captained the team for two. You practise the same shot until it holds up under pressure, then you go play. Design works the same way.</p>
     <div class="stats r" style="--d:90"><div><b>8</b><span>Years designing</span></div><div><b>2×</b><span>UFV golf captain</span></div></div>
     <button type="button" class="shotbtn r" style="--d:100" data-step="1"><span class="gb"></span>Putt it <span class="ar">&#8594;</span></button>
@@ -2473,5 +2478,50 @@ brand.addEventListener("pointerleave", () => {
 })();
 })();
 </script>
+
+<script>
+// Bind the final two words of prose, including dynamically opened case studies.
+// Text-node edits preserve links, emphasis, and the animated heading markup.
+(() => {
+  const selector = "p, figcaption, .lede, .client, .scope";
+  function keepLastWordsTogether(element) {
+    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        return node.parentElement.closest("svg, script, style, [aria-hidden='true']")
+          ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    const nodes = []; let node;
+    while ((node = walker.nextNode())) nodes.push(node);
+    const text = nodes.map(n => n.data).join("");
+    // Match ordinary spaces only, so a second pass leaves existing bindings alone.
+    const match = /\S+([ \t\r\n]+)\S+\s*$/.exec(text);
+    if (!match) return;
+    const start = match.index + match[0].indexOf(match[1]);
+    const end = start + match[1].length;
+    let offset = 0;
+    for (const n of nodes) {
+      const length = n.data.length;
+      const a = Math.max(0, start - offset), b = Math.min(length, end - offset);
+      if (a < b) n.data = n.data.slice(0, a) + (start >= offset ? "\u00a0" : "") + n.data.slice(b);
+      offset += length;
+    }
+  }
+  function tidy(root) {
+    if (root.nodeType !== Node.ELEMENT_NODE) return;
+    if (root.matches(selector)) keepLastWordsTogether(root);
+    root.querySelectorAll(selector).forEach(keepLastWordsTogether);
+  }
+  tidy(document.body);
+  new MutationObserver(records => {
+    for (const record of records) {
+      const parent = record.target.nodeType === Node.ELEMENT_NODE ? record.target.closest(selector) : null;
+      if (parent) keepLastWordsTogether(parent);
+      record.addedNodes.forEach(tidy);
+    }
+  }).observe(document.body, { childList: true, subtree: true });
+})();
+</script>
+
 </body>
 </html>
