@@ -732,6 +732,19 @@ p,figcaption,.lede,.client,.scope{ text-wrap:pretty; }
 }
 .pcard[data-project="cth"]:hover .ph img.on[src="img/m/cth-3.jpg"]{transform:none}
 
+
+/* Center the original photos and fill the panels without synthetic edges. */
+.pcard[data-project="chwk"] .ph img,
+.pcard[data-project="bq"] .ph img[src="img/m/bq-1.jpg"],
+.pcard[data-project="bq"] .ph img[src="img/m/bq-6.jpg"],
+.pcard[data-project="cbh"] .ph img[src="img/m/cbh-3.jpg"],
+.pcard[data-project="cth"] .ph img[src="img/m/cth-3.jpg"]{
+  object-fit:cover;
+  object-position:center center;
+  background-image:none;
+  transform:none;
+}
+
 </style>
 </head>
 <body>
@@ -2594,62 +2607,6 @@ brand.addEventListener("pointerleave", () => {
 </script>
 
 
-<script>
-// Extend each fitted mockup's own edge colours into its letterboxed space.
-// The original image stays centered, sharp, and uncropped above this backdrop.
-(() => {
-  const targets = '.pcard[data-project="chwk"] .ph img, '
-    + '.pcard[data-project="bq"] .ph img[src="img/m/bq-1.jpg"], '
-    + '.pcard[data-project="bq"] .ph img[src="img/m/bq-6.jpg"], '
-    + '.pcard[data-project="cbh"] .ph img[src="img/m/cbh-3.jpg"], '
-    + '.pcard[data-project="cth"] .ph img[src="img/m/cth-3.jpg"]';
-  const registered = new WeakSet(), cache = new WeakMap();
-  function paint(img) {
-    if (!img.complete || !img.naturalWidth || !img.clientWidth || !img.clientHeight) return;
-    const horizontal = img.clientWidth / img.clientHeight > img.naturalWidth / img.naturalHeight;
-    let saved = cache.get(img);
-    if (!saved || saved.src !== img.currentSrc) { saved = {src:img.currentSrc}; cache.set(img, saved); }
-    const key = horizontal ? 'sides' : 'ends';
-    if (!saved[key]) {
-      try {
-        const canvas = document.createElement('canvas');
-        canvas.width = horizontal ? 2 : Math.min(1024, img.naturalWidth);
-        canvas.height = horizontal ? Math.min(1024, img.naturalHeight) : 2;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
-        if (horizontal) {
-          ctx.drawImage(img, 0, 0, 1, img.naturalHeight, 0, 0, 1, canvas.height);
-          ctx.drawImage(img, img.naturalWidth - 1, 0, 1, img.naturalHeight, 1, 0, 1, canvas.height);
-        } else {
-          ctx.drawImage(img, 0, 0, img.naturalWidth, 1, 0, 0, canvas.width, 1);
-          ctx.drawImage(img, 0, img.naturalHeight - 1, img.naturalWidth, 1, 0, 1, canvas.width, 1);
-        }
-        saved[key] = canvas.toDataURL();
-      } catch (error) { return; } // Keep the original image if pixel access is unavailable.
-    }
-    img.style.backgroundImage = `url("${saved[key]}")`;
-    img.style.backgroundSize = '100% 100%';
-    img.style.backgroundRepeat = 'no-repeat';
-  }
-  const resize = typeof ResizeObserver === 'function' ? new ResizeObserver(entries => entries.forEach(e => paint(e.target))) : null;
-  function register(img) {
-    if (registered.has(img)) return;
-    registered.add(img);
-    img.addEventListener('load', () => paint(img));
-    if (resize) resize.observe(img);
-    paint(img);
-  }
-  function scan(root) {
-    if (root.nodeType !== Node.ELEMENT_NODE) return;
-    if (root.matches(targets)) register(root);
-    root.querySelectorAll(targets).forEach(register);
-  }
-  scan(document.body);
-  new MutationObserver(records => records.forEach(r => r.addedNodes.forEach(scan)))
-    .observe(document.body, {childList:true, subtree:true});
-  if (!resize) addEventListener('resize', () => document.querySelectorAll(targets).forEach(paint));
-})();
-</script>
 
 </body>
 </html>
