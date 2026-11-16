@@ -694,6 +694,44 @@ p,figcaption,.lede,.client,.scope{ text-wrap:pretty; }
   .pcard .thumbs[data-count="3"] .tb:last-child{grid-column:1 / -1}
 }
 
+
+/* Keep CHWK's full mockups centered in the main image panel. */
+.pcard[data-project="chwk"] .ph img{
+  object-fit:contain;
+  object-position:center center;
+  transform:none;
+}
+.pcard[data-project="chwk"]:hover .ph img.on{transform:none}
+
+
+/* Preserve the full Tuesday and Monday Banquet posters in the main panel. */
+.pcard[data-project="bq"] .ph img[src="img/m/bq-1.jpg"],
+.pcard[data-project="bq"] .ph img[src="img/m/bq-6.jpg"]{
+  object-fit:contain;
+  object-position:center center;
+  transform:none;
+}
+.pcard[data-project="bq"]:hover .ph img.on[src="img/m/bq-1.jpg"],
+.pcard[data-project="bq"]:hover .ph img.on[src="img/m/bq-6.jpg"]{transform:none}
+
+
+/* Show the complete CBH Raptors poster in the main panel. */
+.pcard[data-project="cbh"] .ph img[src="img/m/cbh-3.jpg"]{
+  object-fit:contain;
+  object-position:center center;
+  transform:none;
+}
+.pcard[data-project="cbh"]:hover .ph img.on[src="img/m/cbh-3.jpg"]{transform:none}
+
+
+/* Keep the full Close to Home rose bottle visible. */
+.pcard[data-project="cth"] .ph img[src="img/m/cth-3.jpg"]{
+  object-fit:contain;
+  object-position:center center;
+  transform:none;
+}
+.pcard[data-project="cth"]:hover .ph img.on[src="img/m/cth-3.jpg"]{transform:none}
+
 </style>
 </head>
 <body>
@@ -814,7 +852,7 @@ const __main = () => {
 // ================= content =================
 const CHWK_KIT = `<svg class="kit" viewBox="0 0 960 300" role="img" aria-label="Four simple shapes from the sculpture, broken into a kit of pieces that fly together to spell CHWK"><g transform="translate(10 50)"><circle cx="45" cy="45" r="45" fill="#008BAC"/><rect x="110" y="0" width="90" height="90" fill="#68BD44"/><rect x="0" y="110" width="90" height="100" fill="#F2BC1B"/><path d="M110 110L210 210H110Z" fill="#EF4341"/></g><path d="M300 150H390M376 136L390 150L376 164" fill="none" stroke="#1F1F1E" stroke-width="2"/><g class="letters" transform="translate(460 97.0) scale(0.15514)"><path d="M99 100L59 148L32 195L12 249L0 322L4 397L23 466L53 525L99 582L340 342Z" fill="#68BD45" stroke="#68BD45" stroke-width="3" stroke-linejoin="round" style="--x:-700px;--y:350px;--r:120deg;--i:0"/><path d="M177 41L134 69L100 100L342 342L584 101L546 67L500 38L438 13L393 3L317 0L278 5L226 19Z" fill="#008CAD" stroke="#008CAD" stroke-width="3" stroke-linejoin="round" style="--x:-900px;--y:-266px;--r:-140deg;--i:1"/><path d="M100 582L145 621L199 652L248 670L317 682L393 679L462 661L521 632L583 583L343 342Z" fill="#F4BC16" stroke="#F4BC16" stroke-width="3" stroke-linejoin="round" style="--x:-250px;--y:574px;--r:-90deg;--i:2"/><path d="M660 15L660 667L856 667L856 15Z" fill="#F6861F" stroke="#F6861F" stroke-width="3" stroke-linejoin="round" style="--x:-350px;--y:-490px;--r:70deg;--i:3"/><path d="M945 243L906 255L880 276L860 312L856 349L865 383L889 415L906 427L928 436L963 439L1004 426L1030 404L1048 371L1052 330L1039 291L1017 265L980 246Z" fill="#EE4341" stroke="#EE4341" stroke-width="3" stroke-linejoin="round" style="--x:150px;--y:595px;--r:0deg;--i:4"/><path d="M1052 15L1052 667L1248 667L1248 15Z" fill="#7F287C" stroke="#7F287C" stroke-width="3" stroke-linejoin="round" style="--x:450px;--y:490px;--r:-60deg;--i:5"/><path d="M1325 15L1651 666L1780 406L1584 15Z" fill="#008CAD" stroke="#008CAD" stroke-width="3" stroke-linejoin="round" style="--x:250px;--y:-560px;--r:160deg;--i:6"/><path d="M1585 15L1781 406L1976 15Z" fill="#0090A6" stroke="#0090A6" stroke-width="3" stroke-linejoin="round" style="--x:300px;--y:-630px;--r:-120deg;--i:7"/><path d="M2236 15L1977 15L1781 407L1911 666Z" fill="#68BD45" stroke="#68BD45" stroke-width="3" stroke-linejoin="round" style="--x:700px;--y:455px;--r:-130deg;--i:8"/><path d="M2313 16L2313 664L2637 340Z" fill="#F6861F" stroke="#F6861F" stroke-width="3" stroke-linejoin="round" style="--x:-150px;--y:-455px;--r:90deg;--i:9"/><path d="M2313 665L2964 666L2640 341Z" fill="#EE4341" stroke="#EE4341" stroke-width="3" stroke-linejoin="round" style="--x:0px;--y:595px;--r:110deg;--i:10"/><path d="M2313 15L2638 340L2964 15Z" fill="#F4BC16" stroke="#F4BC16" stroke-width="3" stroke-linejoin="round" style="--x:-350px;--y:350px;--r:-170deg;--i:11"/></g></svg>`;
 const PROJECTS = [
-  { id: "cth", acc: "#B9776A", scene: "cth", title: "Close to Home", cat: "Packaging", year: "2025", card: "img/m/cth-1.jpg", mocks: ["img/m/cth-1.jpg", "img/m/cth-2.jpg", "img/m/cth-3.jpg", "img/m/cth-4.jpg"],
+  { id: "cth", acc: "#B9776A", scene: "cth", title: "Close to Home", cat: "Packaging", year: "2026", card: "img/m/cth-1.jpg", mocks: ["img/m/cth-1.jpg", "img/m/cth-2.jpg", "img/m/cth-3.jpg", "img/m/cth-4.jpg"],
     client: "The Swirl Wine Imports • Work", scope: "Landscape illustration, front, back and neck labels for Prima Luce, Ricordi and Ville Natale",
     lede: "A three-bottle range (a white, a rosé and a red) drawn as one continuous landscape and split across three labels.",
     brief: "A new three-bottle range for The Swirl Wine Imports: a white, a rosé and a red that needed to feel personal, sit together as a family, and still read clearly on their own.",
@@ -879,7 +917,7 @@ const el = { intro: $("#intro"), drive: $("#drive"), approach: $("#approach"), w
   stage: $("#stage"), stroke: $("#stroke"), yds: $("#yds"), ydsL: $("#ydsL"), card: $("#card"), detail: $("#detail"), loader: $("#loader") };
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-el.rail.innerHTML = PROJECTS.map((p, i) => `<button class="pcard" data-i="${i}" aria-label="Open ${p.title}">
+el.rail.innerHTML = PROJECTS.map((p, i) => `<button class="pcard" data-project="${p.id}" data-i="${i}" aria-label="Open ${p.title}">
   <div class="ph">${p.mocks.map((s, k) => `<img src="${s}" alt="" decoding="async"${k ? ' loading="lazy"' : ' class="on"'}>`).join("")}<span class="dots">${p.mocks.map((s, k) => `<i${k ? "" : ' class="on"'}></i>`).join("")}</span></div>
   <div class="info"><div class="num">0${i + 1}<small>/ 0${PROJECTS.length}</small></div>
     <div><div class="mono meta">${p.cat} · ${p.year}</div><h3>${p.title}</h3><p class="lede">${p.lede}</p><div class="client"><b>Client</b> · ${p.client}</div>
