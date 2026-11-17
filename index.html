@@ -748,7 +748,14 @@ p,figcaption,.lede,.client,.scope{ text-wrap:pretty; }
 }
 
 /* Work-card text is permanent content, never a reveal-animation layer. */
-.pcard .info,.pcard .info>div,.pcard .info h3,.pcard .info h3 *,.pcard .info .meta,.pcard .info .lede,.pcard .info .client,.pcard .info .client *,.pcard .info .scope{opacity:1!important;visibility:visible!important;transform:none!important;clip-path:none!important;animation:none!important}
+.pcard .info,.pcard .info>div,.pcard .info h3,.pcard .info h3 *,.pcard .info .meta,.pcard .info .lede,.pcard .info .client,.pcard .info .client *,.pcard .info .scope{opacity:1!important;visibility:inherit!important;transform:none!important;clip-path:none!important;animation:none!important}
+
+/* Hidden work layers must never intercept the hero controls.
+   Static fallback pages show Work in normal document flow. */
+html:not(.static-portfolio) #work:not(.on),
+html:not(.static-portfolio) #work:not(.on) * {
+  pointer-events:none!important;
+}
 </style>
 </head>
 <body>
